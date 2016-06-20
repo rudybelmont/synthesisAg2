@@ -1,0 +1,41 @@
+<h2>Synthesis Item List</h2>
+<button type="button" class="btn btn-default" (click)="newMaterialModal.open()">New Item</button>
+<ul class="materials">
+    <li *ngFor="let material of materials" [class.selected]="material === selectedMaterials" (click)="onSelect(material)">
+        <span class="badge">{{material.id}}</span> {{material.name}}
+        <confirmDelButton></confirmDelButton>
+    </li>
+</ul>
+<div *ngIf="selectedMaterial">
+    <h2>
+        {{selectedMaterial.name | uppercase}} is my material
+    </h2>
+    <button (click)="gotoDetail()">View Details</button>
+</div>
+
+<modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="closed()" (onDismiss)="dismissed()"
+    (onOpen)="opened()" #newMaterialModal>
+    <form #modalForm="ngForm">
+        <modal-header [show-close]="true">
+            <h4 class="modal-title">New Material</h4>
+        </modal-header>
+        <modal-body>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" required [(ngModel)]="model.name" ngControl="name" #name="ngForm">
+            </div>
+            <div class="form-group">
+                <label>Unit</label>
+                <input type="text" class="form-control" required [(ngModel)]="model.unit" ngControl="unit" #unit="ngForm">
+            </div>
+            <div class="form-group">
+                <label>Quantity: </label>
+                <input type="number" class="form-control" [(ngModel)]="model.quantity" ngControl="quantity" placeholder="quantity" />
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="newMaterialModal.dismiss()">Cancel</button>
+            <button type="button" class="btn btn-primary" [disabled]="!modalForm.valid" (click)="newMaterialModal.close()">Save</button>
+        </modal-footer>
+    </form>
+</modal>

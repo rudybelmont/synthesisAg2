@@ -1,0 +1,15 @@
+button {
+  font-family: Arial;
+  background-color: #eee;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.delete-button{
+  float: right;
+  background: red;
+  color: white;
+}

@@ -1,0 +1,13 @@
+<h3>Items Board</h3>
+<div class="grid grid-pad">
+
+  <div *ngFor="let mainItem of mainItems" class="col-1-4">
+    <div class="module material" [class.active]="mainItem.status">
+      <h2>{{mainItem.name}}</h2>
+      <h5>rank: {{mainItem.rank}}</h5>
+      <h6>description: {{mainItem.description}}</h6>
+    </div>
+  </div>
+
+  <itemAddModal></itemAddModal>
+</div>

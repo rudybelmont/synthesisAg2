@@ -1,0 +1,19 @@
+<div *ngIf="material">
+    <h2>{{material.name}} details!</h2>
+    <div>
+        <label>id: </label>{{material.id}}</div>
+    <div>
+        <label>name: </label>
+        <input [(ngModel)]="material.name" placeholder="name" />
+    </div>
+    <div>
+        <label>unit: </label>
+        <input [(ngModel)]="material.unit" placeholder="unit" />
+    </div>
+    <div>
+        <label>quantity: </label>
+        <input type="number" [(ngModel)]="material.quantity" placeholder="quantity" />
+    </div>
+    <button (click)="goBack()">Back</button>
+    <button (click)="save()">Save</button>
+</div>

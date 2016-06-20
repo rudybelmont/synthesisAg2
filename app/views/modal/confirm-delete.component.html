@@ -1,0 +1,15 @@
+<button class="delete-button" (click)="deletedModalConfirm.open(material)">Delete</button>
+
+<modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="closed(material, $event)" (onDismiss)="dismissed()"
+    (onOpen)="opened(material)" #deletedModalConfirm>
+    <modal-header [show-close]="true">
+        <h4 class="modal-title">Deleted!</h4>
+    </modal-header>
+    <modal-body>
+        <p>Are you sure want delete {{delName}}</p>       
+    </modal-body><!--delete(material, $event)-->
+        <modal-footer>
+            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="deletedModalConfirm.dismiss()">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="deletedModalConfirm.close(material, $event)">Yes</button>
+        </modal-footer>
+</modal>

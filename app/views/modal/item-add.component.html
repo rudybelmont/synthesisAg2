@@ -1,0 +1,29 @@
+<button type="button" class="btn btn-default" (click)="newItemModal.open()">New Item</button>
+
+<modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="closed()" (onDismiss)="dismissed()"
+    (onOpen)="opened()" #newItemModal>
+    <form #modalForm="ngForm">
+        <modal-header [show-close]="true">
+            <h4 class="modal-title">New Item</h4>
+        </modal-header>
+        <modal-body>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" required [(ngModel)]="model.name" ngControl="name" #name="ngForm">
+            </div>
+            <div class="form-group">
+                <label>Rank</label>
+                <input type="text" class="form-control" required [(ngModel)]="model.rank" ngControl="rank" #unit="ngForm">
+            </div>
+            <div class="form-group">
+                <label>Description: </label>
+                <input type="text" class="form-control" [(ngModel)]="model.description" ngControl="description" placeholder="description" />
+            </div>
+            Tabel in here!!!!
+        </modal-body>
+        <modal-footer>
+            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="newItemModal.dismiss()">Cancel</button>
+            <button type="button" class="btn btn-primary" [disabled]="!modalForm.valid" (click)="newItemModal.close()">Save</button>
+        </modal-footer>
+    </form>
+</modal>

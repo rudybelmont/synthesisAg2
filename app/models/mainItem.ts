@@ -1,7 +1,11 @@
+import { Material} from './material'
+import { Item } from './item'
+
 export class MainItem {
-  id: number;
-  name: string;
-  rank: string;
-  description: string;
-  status: boolean;
+  public item: Item
+  public materials: Material[]
 }
+
+
+
+

@@ -24,10 +24,16 @@ var SynthesisItemService = (function () {
     };
     SynthesisItemService.prototype.getMainItem = function (id) {
         return this.getMainItems()
-            .then(function (mainItems) { return mainItems.filter(function (mainItem) { return mainItem.id === id; })[0]; });
+            .then(function (mainItems) { return mainItems.filter(function (mainItem) { return mainItem.item.id === id; })[0]; });
+    };
+    SynthesisItemService.prototype.getMainItemsDetail = function (itemId) {
+        return this.http.get(this.mainItemsUrl + '/' + itemId + '.json')
+            .toPromise()
+            .then(function (response) { return response.json(); })
+            .catch(this.handleError);
     };
     SynthesisItemService.prototype.save = function (mainItem) {
-        if (mainItem.id) {
+        if (mainItem.item.id) {
             return this.put(mainItem);
         }
         return this.post(mainItem);
@@ -47,7 +53,7 @@ var SynthesisItemService = (function () {
     SynthesisItemService.prototype.put = function (mainItem) {
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
-        var url = this.mainItemsUrl + "/" + mainItem.id + ".json";
+        var url = this.mainItemsUrl + "/" + mainItem.item.id + ".json";
         return this.http
             .put(url, JSON.stringify(mainItem), { headers: headers })
             .toPromise()

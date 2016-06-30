@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_deprecated_1 = require('@angular/router-deprecated');
 var mainItem_1 = require('../../models/mainItem');
+var Item_1 = require('../../models/Item');
+var itemMaterial_1 = require('../../models/itemMaterial');
 var synthesisItem_service_1 = require('../../services/synthesisItem.service');
 var ng2_bs3_modal_1 = require('ng2-bs3-modal/ng2-bs3-modal');
 var ItemAddComponent = (function () {
@@ -21,11 +23,16 @@ var ItemAddComponent = (function () {
         this.keyboard = false;
         this.backdrop = true;
         this.model = new mainItem_1.MainItem();
+        this.itemMaterialData = [];
     }
+    ItemAddComponent.prototype.ngOnInit = function () {
+        this.model.item = new Item_1.Item();
+    };
     ItemAddComponent.prototype.opened = function () {
-        this.model.name = "";
-        this.model.rank = "";
-        this.model.description = "";
+        //this.model.item.name = "";
+        //this.model.item.rank = "";
+        //this.model.item.description = "";
+        this.load();
         this.output = '(opened)';
     };
     ItemAddComponent.prototype.open = function () {
@@ -40,10 +47,31 @@ var ItemAddComponent = (function () {
             _this.mainItem = mainItem;
         })
             .catch(function (error) { return _this.error = error; });
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('');
     };
     ItemAddComponent.prototype.dismissed = function () {
         this.output = '(dismissed)';
+    };
+    ItemAddComponent.prototype.load = function () {
+        this.itemMaterialData.push(new itemMaterial_1.ItemMaterial());
+        this.itemMaterialData[0].item_id = 1;
+    };
+    ItemAddComponent.prototype.onFileChange = function (fileInput) {
+        console.log("change picture");
+        /*let input = fileInput.target;
+    
+        if (input && input.files && input.files[0]) {
+            // Preview picture
+            this.pictureLink = URL.createObjectURL(input.files[0]);
+    
+            this.base64(input.files[0], data => {
+                let prefix = 'data:' + data.filetype + ';base64,';
+                this.hero.picture = prefix + data.base64;
+            });
+        }*/
+    };
+    ItemAddComponent.prototype.onRowClick = function (event, id) {
+        console.log(event.target.outerText, id);
     };
     __decorate([
         core_1.Input(), 

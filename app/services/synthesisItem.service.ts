@@ -4,6 +4,7 @@ import { Headers, Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { MainItem } from '../models/mainItem';
+import { AppConfig } from '../config/index';
 
 
 @Injectable()
@@ -22,11 +23,18 @@ export class SynthesisItemService {
 
   getMainItem(id: number) {
     return this.getMainItems()
-      .then(mainItems => mainItems.filter(mainItem => mainItem.id === id)[0]);
+      .then(mainItems => mainItems.filter(mainItem => mainItem.item.id === id)[0]);
+  }
+
+  getMainItemsDetail(itemId: number): Promise<MainItem> {
+    return this.http.get(this.mainItemsUrl + '/' + itemId + '.json')
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
   }
 
   save(mainItem: MainItem): Promise<MainItem> {
-    if (mainItem.id) {
+    if (mainItem.item.id) {
       return this.put(mainItem);
     }
     return this.post(mainItem);
@@ -50,7 +58,7 @@ export class SynthesisItemService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    let url = `${this.mainItemsUrl}/${mainItem.id}.json`;
+    let url = `${this.mainItemsUrl}/${mainItem.item.id}.json`;
 
     return this.http
       .put(url, JSON.stringify(mainItem), { headers: headers })

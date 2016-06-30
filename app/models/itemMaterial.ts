@@ -1,6 +1,6 @@
-export class ItemMaterial {
+export class ItemMaterial {  
   id: number;
-  item_id: string;
-  material_id: string;
+  item_id: number;
+  material_id: number;
   quantity: number;
 }

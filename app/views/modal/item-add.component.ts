@@ -36,9 +36,6 @@ export class ItemAddComponent implements OnInit {
     private synthesisItemService: SynthesisItemService) { }
 
   opened() {
-    //this.model.item.name = "";
-    //this.model.item.rank = "";
-    //this.model.item.description = "";
     this.load();
     this.output = '(opened)';
   }
@@ -53,9 +50,9 @@ export class ItemAddComponent implements OnInit {
       .save(this.mainItem)
       .then(mainItem => {
         this.mainItem = mainItem;
+        location.reload() //this not good for best practice
       })
       .catch(error => this.error = error);
-    this.router.navigateByUrl('');
   }
 
   dismissed() {
@@ -66,23 +63,6 @@ export class ItemAddComponent implements OnInit {
     this.itemMaterialData.push(new ItemMaterial())
     this.itemMaterialData[0].item_id = 1
   }
-
-  onFileChange(fileInput: any) {
-    console.log("change picture")
-    /*let input = fileInput.target;
-
-    if (input && input.files && input.files[0]) {
-        // Preview picture
-        this.pictureLink = URL.createObjectURL(input.files[0]);
-
-        this.base64(input.files[0], data => {
-            let prefix = 'data:' + data.filetype + ';base64,';
-            this.hero.picture = prefix + data.base64;
-        });
-    }*/
-  }
-
-
 
   onRowClick(event, id) {
     console.log(event.target.outerText, id);

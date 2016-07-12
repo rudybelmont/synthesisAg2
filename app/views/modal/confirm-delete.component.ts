@@ -36,7 +36,7 @@ export class ConfirmDeleteComponent {
   }
 
   opened(material) {
-    this.delName = material
+    this.delName = material.name
     this.output = '(opened)';
   }
 

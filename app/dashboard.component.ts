@@ -1,14 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router-deprecated';
 import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import {UPLOAD_DIRECTIVES} from 'ng2-uploader/ng2-uploader';
 
 import { Material } from './models/material';
 import { MainItem} from './models/mainItem';
 import { Item } from './models/item';
 import { SynthesisItemService } from './services/synthesisItem.service';
 import { ItemAddComponent } from './views/modal/item-add.component';
-//import { AppConfig } from './config/index';
 
 import {enableProdMode} from '@angular/core';
 enableProdMode();
@@ -17,40 +15,35 @@ enableProdMode();
   selector: 'my-dashboard',
   templateUrl: 'app/views/dashboard.component.html',
   styleUrls: ['app/css/dashboard.component.css', 'app/css/card.component.css'],
-  directives: [MODAL_DIRECTIVES, ItemAddComponent, UPLOAD_DIRECTIVES]
+  directives: [MODAL_DIRECTIVES, ItemAddComponent]
 })
 
 export class DashboardComponent implements OnInit {
-  //@Input() mainItem: MainItem;
   @Input() mainItemDetail: MainItem;
   error: any;
-  mainItems: MainItem[] = [];
+  mainItems: Item[] = [];
   //modal: ModalComponent
 
-  //mainItemDetail: MainItem = new MainItem();
   pictureLink: string;
   viewItemDetail: boolean = true;
   editItemDetail: boolean = false;
 
-  animation: boolean = true;
+  /*animation: boolean = true;
   keyboard: boolean = false;
-  backdrop: string | boolean = true;
-  output: string;
+  backdrop: string | boolean = true;*/
 
   constructor(
     private router: Router,
     private synthesisItemService: SynthesisItemService) {
   }
 
-  uploadFile: any;
-  options: Object = {
-    url: ''
-  };
-
   ngOnInit() {
     this.mainItemDetail = new MainItem();
     this.mainItemDetail.item = new Item();
-    this.refreshDashBoard();
+
+    this.synthesisItemService.getMainItems()
+      .then(mainItems => { this.mainItems = mainItems }
+      )
   }
 
   /*opened(itemId) {
@@ -59,17 +52,11 @@ export class DashboardComponent implements OnInit {
       //.then(this.debug)
       .then(response => this.mainItemDetail = response)
     //console.log(this.mainItemDetail);
-    //this.mainItem.name = this.mainItem.name
-    //this.model.rank = this.mainItemDetail.rank
-    //this.model.description = this.mainItemDetail.description
   }
 
   debug(response: any) {
     console.log(response.item)
     this.mainItemDetail = response.item;
-    //this.mainItemDetail.name = response.item.name
-    //this.mainItemDetail.rank = response.item.rank
-    //this.mainItemDetail.description = response.item.description
   }*/
 
   gotoDetail(material: Material) {
@@ -85,48 +72,88 @@ export class DashboardComponent implements OnInit {
     this.output = '(dismissed)';
   }*/
 
-  handleUpload(data): void {
-    if (data && data.response) {
-      data = JSON.parse(data.response);
-      this.uploadFile = data;
+  onFileChange(fileInput: any) {
+    let input = fileInput.target;
+    if (input && input.files && input.files[0]) {
+      // Preview picture
+      this.pictureLink = URL.createObjectURL(input.files[0]);
 
-      this.mainItemDetail = this.mainItemDetail;
-      this.synthesisItemService
-        .save(this.mainItemDetail)
-        .then(mainItemDetailInput => {
-          this.mainItemDetail = mainItemDetailInput;
-        })
+      this.base64(input.files[0], data => {
+        let prefix = 'data:' + data.filetype + ';base64,';
+
+        this.mainItemDetail.item.picture = prefix + data.base64;
+      });
     }
   }
 
-  toViewItem(itemId) {
-    this.viewItemDetail = true;
-    this.editItemDetail = false;
+  base64(file: any, callback: (result: any) => any) {
+    let result: any = {};
+    function readerOnload(e: any) {
+      // Show preview
+      this.pictureLink = e.target.result;
 
+      // Generate base64
+      let base64 = btoa(e.target.result);
+      result.base64 = base64;
+      callback(result);
+    };
+
+    let reader = new FileReader();
+    reader.onload = readerOnload;
+
+    result.filetype = file.type;
+    result.size = file.size;
+    result.filename = file.name;
+    reader.readAsBinaryString(file);
+  }
+
+  toViewItemCancel(itemId) {
+    document.getElementById("cardView_" + itemId).className = ' '
+    document.getElementById("cardEdit_" + itemId).className = 'card-hide'
+  }
+
+  toViewItemSave(itemId, item) {
     if (itemId != "") {
-      console.log("try update");
+      document.getElementById("cardEdit_" + itemId).className = ' '
+      document.getElementById("cardView_" + itemId).className = 'card '
+
+      this.mainItemDetail.item.id = itemId
+      this.mainItemDetail.item.name = item.name
+      this.mainItemDetail.item.rank = item.rank
+      this.mainItemDetail.item.description = item.description
+
       this.synthesisItemService
         .save(this.mainItemDetail)
         .then(mainItemDetailInput => {
           this.mainItemDetail = mainItemDetailInput;
         })
         .catch(error => this.error = error)
-    }
+    } else {
+      document.getElementById("cardView_" + item.id).className = ' '
+      document.getElementById("cardEdit_" + item.id).className = 'card-hide'
 
-    this.refreshDashBoard();
+    }
+    document.getElementById("cardView_" + item.id).className = ' '
+    document.getElementById("cardEdit_" + item.id).className = 'card-hide'
   }
 
   toEditItem(itemId) {
-    var el = document.getElementById(itemId);
-    console.log(el);
-    this.viewItemDetail = false;
-    this.editItemDetail = true
+    for (var i = 0; i < this.mainItems.length; i++) {
+      if (this.mainItems[i].id == itemId) {
+        this.mainItemDetail.item.picture = this.mainItems[i].picture
+        break;
+      }
+    }
+
+    document.getElementById("cardView_" + itemId).className = 'card-hide'
+    document.getElementById("cardEdit_" + itemId).className = ''
 
     this.synthesisItemService
       .getMainItemsDetail(itemId)
-      .then(response => { this.mainItemDetail = response; })
-
-    this.refreshDashBoard();
+      .then(response => {
+        this.mainItemDetail = response;
+        console.log(this.mainItemDetail.item.picture.picture.url);
+      })
   }
 
   /*generatePictureLink(picture?: any) {
@@ -141,12 +168,13 @@ export class DashboardComponent implements OnInit {
 
   refreshDashBoard() {
     this.synthesisItemService.getMainItems()
-      .then(mainItems => this.mainItems = mainItems)
+      .then(mainItems => {
+        this.mainItems = mainItems
+      })
   }
 
   onRowClick(event, id) {
     console.log(event.target.outerText, id);
   }
-
 
 }

@@ -1,50 +1,57 @@
 <h3>Items Board</h3>
 <div class="grid grid-pad">
 
-  <div *ngFor="let mainItem of mainItems" class="col-1-4">
-    <div class="card module material" [ngClass]="{active: mainItem.status}" >
-      <div class="card-image">
-        <img src="http://localhost:3000/{{mainItem.picture.picture.url}}" class="activator" />
-      </div>
+  <div *ngFor="let item of mainItems" class="col-1-4">
+    <div class="card module material" [ngClass]="{active: item.status}">
 
-      <div *ngIf="viewItemDetail">
+      <div [attr.id]="'cardView_' + item.id">
+        <div class="card-image">
+          <img src="http://localhost:3000/{{item.picture.picture.url}}" class="activator" />
+        </div>
         <div class="card-content">
-          <span class="card-title activator grey-text text-darken-4">{{mainItem.name}}</span>
-          <p>rank: {{mainItem.rank}}</p>
-          <p>description: {{mainItem.description}}</p>
+          <span class="card-title activator grey-text text-darken-4">{{item.name}}</span>
+          <p>rank: {{item.rank}}</p>
+          <p>description: {{item.description}}</p>
         </div>
         <div class="card-action">
-          <button type="button" (click)="toEditItem(mainItem.id)">Update Item</button>
+          <button type="button" class="btn btn-default" (click)="toEditItem(item.id)">Update Item</button>
         </div>
       </div>
 
-      <div *ngIf="editItemDetail">
+      <div [attr.id]="'cardEdit_' + item.id" class="card-hide">
+        <div class="card-image">
+          <img src="{{mainItemDetail.item.picture}}" class="activator" />
+        </div>
+
         <div class="card-content">
           <form #editItemForm="ngForm">
             <div class="form-group">
+              <label for="picture">Picture</label>
+              <input type="file" id="photo" (change)="onFileChange($event)" ngControl="picture" class="input-text"> </div>
+            <div class="form-group">
               <label>Name</label>
-              <input type="text" class="form-control" required [(ngModel)]="mainItemDetail.item.name" ngControl="name" #name="ngForm" placeholder="name">
+              <input type="text" class="form-control" required [(ngModel)]="item.name" ngControl="name" #name="ngForm" placeholder="name">
             </div>
             <div class="form-group">
               <label>Rank</label>
-              <input type="text" class="form-control" required [(ngModel)]="mainItemDetail.item.rank" ngControl="rank" #rank="ngForm" placeholder="rank">
+              <input type="text" class="form-control" required [(ngModel)]="item.rank" ngControl="rank" #rank="ngForm" placeholder="rank">
             </div>
             <div class="form-group">
               <label>Description: </label>
-              <input type="text" class="form-control" [(ngModel)]="mainItemDetail.item.description" ngControl="description" placeholder="description">
-            </div>
-
-            <div class="card-action">
-              <button type="button" class="btn btn-default" (click)="toViewItem()">Cancel</button>
-              <button type="button" class="btn btn-primary" (click)="toViewItem(mainItem.id)">Save & View Item</button>
+              <input type="text" class="form-control" [(ngModel)]="item.description" ngControl="description" placeholder="description">
             </div>
           </form>
         </div>
-      </div>     
+
+        <div class="card-action">
+          <button type="button" class="btn btn-default" (click)="toViewItemCancel(item.id)">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="toViewItemSave(item.id, item)">Save & View Item</button>
+        </div>
+      </div>
     </div>
-    
+
   </div>
-   <itemAddModal></itemAddModal>
+  <itemAddModal></itemAddModal>
 
   <!--HTML below for pop-up-->
   <!--<modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="closed()" (onDismiss)="dismissed()"

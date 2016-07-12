@@ -1,11 +1,11 @@
 import { Injectable }    from '@angular/core';
-import { Headers, Http, Response } from '@angular/http';
+import { Headers, Http, Response, RequestOptions  } from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 
 import { MainItem } from '../models/mainItem';
+import { Item } from '../models/item';
 import { AppConfig } from '../config/index';
-
 
 @Injectable()
 
@@ -14,7 +14,7 @@ export class SynthesisItemService {
 
   constructor(private http: Http) { }
 
-  getMainItems(): Promise<MainItem[]> {
+  getMainItems(): Promise<Item[]> {
     return this.http.get(this.mainItemsUrl + '.json')
       .toPromise()
       .then(response => response.json())
@@ -23,7 +23,7 @@ export class SynthesisItemService {
 
   getMainItem(id: number) {
     return this.getMainItems()
-      .then(mainItems => mainItems.filter(mainItem => mainItem.item.id === id)[0]);
+      .then(mainItems => mainItems.filter(mainItem => mainItem.id === id)[0]);
   }
 
   getMainItemsDetail(itemId: number): Promise<MainItem> {
@@ -41,11 +41,11 @@ export class SynthesisItemService {
   }
 
   // Add new Item
-  private post(mainItem: MainItem): Promise<MainItem> {
+  private post(mainItem: MainItem): Promise<MainItem> {    
     let headers = new Headers({
       'Content-Type': 'application/json'
     });
-
+    
     return this.http
       .post(this.mainItemsUrl + '.json', JSON.stringify(mainItem), { headers: headers })
       .toPromise()

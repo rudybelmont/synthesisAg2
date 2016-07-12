@@ -7,19 +7,31 @@
             <h4 class="modal-title">New Item</h4>
         </modal-header>
         <modal-body>
+            <!--<div class="form-group">
+                <label for="picture">Picture</label>
+                <input type="file" id="photo" (change)="onFileChange($event)" ngControl="picture" class="input-text">
+            </div>-->
             <div class="form-group">
                 <label>Name</label>
-                <input type="text" class="form-control" required [(ngModel)]="model.name" ngControl="name" #name="ngForm">
+                <input type="text" class="form-control" required [(ngModel)]="model.item.name" ngControl="name" #name="ngForm">
             </div>
             <div class="form-group">
                 <label>Rank</label>
-                <input type="text" class="form-control" required [(ngModel)]="model.rank" ngControl="rank" #unit="ngForm">
+                <input type="text" class="form-control" required [(ngModel)]="model.item.rank" ngControl="rank" #unit="ngForm">
             </div>
             <div class="form-group">
                 <label>Description: </label>
-                <input type="text" class="form-control" [(ngModel)]="model.description" ngControl="description" placeholder="description" />
+                <input type="text" class="form-control" [(ngModel)]="model.item.description" ngControl="description" placeholder="description"
+                />
             </div>
-            Tabel in here!!!!
+            <table>
+                Table go here!!!
+                <!--<tr *ngFor="#row of itemMaterialData">
+                    <td contenteditable='true' (input)="onRowClick($event, row.id)">{{ row.item_id }}</td>
+                    <td contenteditable='true'>{{ row.capital }}</td>
+                </tr>-->
+
+            </table>
         </modal-body>
         <modal-footer>
             <button type="button" class="btn btn-default" data-dismiss="modal" (click)="newItemModal.dismiss()">Cancel</button>

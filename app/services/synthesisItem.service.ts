@@ -1,10 +1,11 @@
 import { Injectable }    from '@angular/core';
-import { Headers, Http, Response } from '@angular/http';
+import { Headers, Http, Response, RequestOptions  } from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 
 import { MainItem } from '../models/mainItem';
-
+import { Item } from '../models/item';
+import { AppConfig } from '../config/index';
 
 @Injectable()
 
@@ -13,7 +14,7 @@ export class SynthesisItemService {
 
   constructor(private http: Http) { }
 
-  getMainItems(): Promise<MainItem[]> {
+  getMainItems(): Promise<Item[]> {
     return this.http.get(this.mainItemsUrl + '.json')
       .toPromise()
       .then(response => response.json())
@@ -25,19 +26,26 @@ export class SynthesisItemService {
       .then(mainItems => mainItems.filter(mainItem => mainItem.id === id)[0]);
   }
 
+  getMainItemsDetail(itemId: number): Promise<MainItem> {
+    return this.http.get(this.mainItemsUrl + '/' + itemId + '.json')
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  }
+
   save(mainItem: MainItem): Promise<MainItem> {
-    if (mainItem.id) {
+    if (mainItem.item.id) {
       return this.put(mainItem);
     }
     return this.post(mainItem);
   }
 
   // Add new Item
-  private post(mainItem: MainItem): Promise<MainItem> {
+  private post(mainItem: MainItem): Promise<MainItem> {    
     let headers = new Headers({
       'Content-Type': 'application/json'
     });
-
+    
     return this.http
       .post(this.mainItemsUrl + '.json', JSON.stringify(mainItem), { headers: headers })
       .toPromise()
@@ -50,7 +58,7 @@ export class SynthesisItemService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    let url = `${this.mainItemsUrl}/${mainItem.id}.json`;
+    let url = `${this.mainItemsUrl}/${mainItem.item.id}.json`;
 
     return this.http
       .put(url, JSON.stringify(mainItem), { headers: headers })

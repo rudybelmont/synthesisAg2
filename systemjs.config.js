@@ -16,7 +16,7 @@
     'app':                        { main: 'main.js',  defaultExtension: 'js' },
     'rxjs':                       { defaultExtension: 'js' },
     'ng2-bs3-modal':              { defaultExtension: 'js' },
-    //'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
+     //'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
   };
   var ngPackageNames = [
     'common',
